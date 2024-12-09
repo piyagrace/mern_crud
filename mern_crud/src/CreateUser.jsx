@@ -25,18 +25,18 @@ function CreateUser (){
                 <form onSubmit={Submit}>
                     <h2>Add User</h2>
                     <div className='mb-2'>
-                        <label>Name</label>
+                        <label>Year</label>
                         <input type="text" placeholder='Enter Name' className='form-control'
                         onChange={(e) => setName(e.target.value)} />                       
                     </div>
                     <div className='mb-2'>
-                        <label htmlFor="">Email</label>
+                        <label htmlFor="">Month</label>
                         <input type="text" placeholder='Enter Email' className='form-control'
                         onChange={(e) => setEmail(e.target.value)}
                         />                       
                     </div>
                     <div className='mb-2'>
-                        <label htmlFor="">Age</label>
+                        <label htmlFor="">Waste Type</label>
                         <input type="text" placeholder='Enter Age' className='form-control'
                         onChange={(e) => setAge(e.target.value)}
                         />                       
