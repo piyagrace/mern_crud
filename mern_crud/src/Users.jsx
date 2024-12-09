@@ -26,9 +26,10 @@ function Users () {
                 <table className='table'>
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Age</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Waste Type</th>
+                            <th>Quantity</th>
                             <th>Action</th>
                         </tr>
                     </thead>

@@ -10,6 +10,12 @@ app.use(express.json())
 
 const db1 = mongoose.connect("mongodb://127.0.0.1:27017/crud")
 
+app.post("/add_solidwaste", (req, res) => {
+    userModel3.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
 app.get('/solid_waste', (req, res) => {
     userModel2.find({}, { type: 1, amount: 1, _id: 0 }) 
     .then(users => res.json(users))
@@ -23,7 +29,7 @@ app.post("/add_solid_waste", (req, res) => {
 }) 
 
 app.get('/', (req, res) => {
-    userModel.find({})
+    userModel3.find({})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
