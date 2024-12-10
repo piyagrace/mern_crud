@@ -35,7 +35,7 @@ function Users () {
 
     return (
         <div className="d-flex vh-90 bg-primary justify-content-center align-items-center">
-            <div className="w-50 bg-white rounded p-3">
+            <div className="w-50 bg-white rounded p-3" style={{ marginTop: '30px' , marginBottom: '30px' }}>
                 <Link to='/create' className='btn btn-success'>Add  +</Link>
                 <p></p>
                 <div className="mb-3">
@@ -67,7 +67,7 @@ function Users () {
                         ))}
                     </select>
                 </div>
-
+                <p> <center> Total Solid Waste Generated </center></p>
                 <table className='table'>
                     <thead>
                         <tr>
