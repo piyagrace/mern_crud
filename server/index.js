@@ -11,6 +11,23 @@ app.use(express.json())
 
 const db1 = mongoose.connect("mongodb://127.0.0.1:27017/crud")
 
+app.get('/filterUsers', (req, res) => {
+    const { month, year } = req.query;
+
+    let filter = {};
+    if (month) {
+        filter.month = month;  // assuming the user model has a 'month' field
+    }
+    if (year) {
+        filter.year = year; // assuming the user model has a 'year' field
+    }
+
+    UserModel3.find(filter)
+        .then(users => res.json(users))
+        .catch(err => res.json(err));
+});
+
+
 app.post("/add_solidwaste", (req, res) => {
     UserModel3.create(req.body)
     .then(users => res.json(users))
