@@ -4,24 +4,26 @@ import axios from "axios";
 
 function UpdateUser (){
     const {id} = useParams()
-    const [name, setName] = useState()
-    const [email, setEmail] = useState()
-    const [age, setAge] = useState()
+    const [year, setYear] = useState()
+    const [month, setMonth] = useState()
+    const [wastetype, setWasteType] = useState()
+    const [quantity, setQuantity] = useState()
     const navigate = useNavigate()
 
     useEffect(() =>{
-        axios.get('http://localhost:3001/getUser/' +id)
+        axios.get('http://localhost:3001/get_solidwaste/'+id)
         .then(result => {console.log(result)
-            setName(result.data.name)
-            setEmail(result.data.email)
-            setAge(result.data.age)
+            setYear(result.data.year)
+            setMonth(result.data.month)
+            setWasteType(result.data.wastetype)
+            setQuantity(result.data.quantity)
         })
         .catch(err => console.log(err))
     }, [])
 
     const Update = (e) => {
         e.preventDefault();
-        axios.put("http://localhost:3001/updateUser/"+id, {name, email, age})
+        axios.put("http://localhost:3001/update_solidwaste/"+id, {year, month, wastetype, quantity})
         .then(result => {
             console.log(result)
             navigate('/')
@@ -35,21 +37,27 @@ function UpdateUser (){
                 <form onSubmit={Update}>
                     <h2>Update User</h2>
                     <div className='mb-2'>
-                        <label>Name</label>
-                        <input type="text" placeholder='Enter Name' className='form-control'
-                         value={name}  onChange={(e) => setName(e.target.value)}  
+                        <label>Year:</label>
+                        <input type="text" placeholder='Enter Year' className='form-control'
+                         value={year}  onChange={(e) => setYear(e.target.value)}  
                         />                       
                     </div>
                     <div className='mb-2'>
-                        <label htmlFor="">Email</label>
-                        <input type="text" placeholder='Enter Email' className='form-control'
-                        value={email}  onChange={(e) => setEmail(e.target.value)}
+                        <label htmlFor="">Month:</label>
+                        <input type="text" placeholder='Enter Month' className='form-control'
+                        value={month}  onChange={(e) => setMonth(e.target.value)}
                         />                       
                     </div>
                     <div className='mb-2'>
-                        <label htmlFor="">Age</label>
-                        <input type="text" placeholder='Enter Age' className='form-control'
-                        value={age}  onChange={(e) => setAge(e.target.value)}
+                        <label htmlFor="">Waste Type:</label>
+                        <input type="text" placeholder='Enter Waste Type' className='form-control'
+                        value={wastetype}  onChange={(e) => setWasteType(e.target.value)}
+                        />                       
+                    </div>
+                    <div className='mb-2'>
+                        <label htmlFor="">Quantity:</label>
+                        <input type="text" placeholder='Enter Quantity' className='form-control'
+                        value={quantity}  onChange={(e) => setQuantity(e.target.value)}
                         />                       
                     </div>
                     <button className='btn btn-success'>Update</button>

@@ -18,7 +18,33 @@ app.post("/add_solidwaste", (req, res) => {
 })
 
 app.get('/solidwaste_data', (req, res) => {
-    UserModel3.find({}, { year: 1, month: 1, wastetype: 1, quantity: 1, _id: 0 }) 
+    UserModel3.find({}, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 }) 
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+app.delete('/delete_solidwaste/:id', (req, res) => {
+    const id = req.params.id;
+    UserModel3.findByIdAndDelete({_id:id})
+    .then(res => res.json(res))
+    .catch(err => res.json(err))
+})
+
+app.get('/get_solidwaste/:id', (req, res) => {
+    const id = req.params.id;
+    UserModel3.findById({_id:id})
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+app.put('/update_solidwaste/:id', (req, res) => {
+    const id = req.params.id;
+    UserModel3.findByIdAndUpdate({_id:id}, {
+        year: req.body.year,
+        month: req.body.month,
+        wastetype: req.body.wastetype,
+        quantity: req.body.quantity
+    })
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
@@ -36,7 +62,7 @@ app.post("/add_solid_waste", (req, res) => {
 }) 
 
 app.get('/', (req, res) => {
-    userModel.find({})
+    UserModel3.find({})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
