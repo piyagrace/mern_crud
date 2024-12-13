@@ -6,21 +6,22 @@ import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
 function Charts () {
     const [chartData, setChartData] = useState([]);
 
+    
     const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
     useEffect(() =>{
-        axios.get('http://localhost:3001/solid_waste')
+        axios.get('http://localhost:3001/chart_data')
         .then(result => setChartData(result.data))
         .catch(err => console.log(err))
     }, [])
-      
+  
     return( 
     <div>
     <p> <center>Charts </center> </p>
     <PieChart width={800} height={300}>
       <Pie
-        dataKey="amount"
-        nameKey="type"
+        dataKey="quantity"
+        nameKey="wastetype"
         isAnimationActive={false}
         data={chartData}
         cx="50%"

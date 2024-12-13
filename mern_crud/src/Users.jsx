@@ -71,7 +71,7 @@ function Users() {
   const transformedData = transformData(users);
 
   return (
-    <div className="d-flex vh-90 bg-primary justify-content-center align-items-center">
+    <div className="d-flex vh-90 bg-success justify-content-center align-items-center">
       <div
         className="w-75 bg-white rounded p-3"
         style={{ marginTop: "30px", marginBottom: "30px" }}

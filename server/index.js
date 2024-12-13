@@ -46,6 +46,13 @@ app.get('/solidwaste_data', (req, res) => {
     .catch(err => res.json(err))
 })
 
+app.get('/chart_data', (req, res) => { 
+    UserModel3.find({ year: 2024, month: "November" }, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 })
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+
 app.delete('/delete_solidwaste/:id', (req, res) => {
     const id = req.params.id;
     UserModel3.findByIdAndDelete({_id:id})
