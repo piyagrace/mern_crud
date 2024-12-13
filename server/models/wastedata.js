@@ -8,4 +8,5 @@ const UserSchema = new mongoose.Schema({
 })
 
 const modelName = 'waste_data';
-module.exports = mongoose.models[modelName] || mongoose.model(modelName, UserSchema);
+const UserModel3 = mongoose.models[modelName] || mongoose.model(modelName, UserSchema);
+module.exports = UserModel3

@@ -5,5 +5,5 @@ const UserSchema = new mongoose.Schema({
     amount: Number
 })
 
-const modelName = 'waste_data';
+const modelName = 'waste_dataa';
 module.exports = mongoose.models[modelName] || mongoose.model(modelName, UserSchema);
