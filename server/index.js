@@ -9,7 +9,13 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const db1 = mongoose.connect("mongodb://127.0.0.1:27017/crud")
+try{
+    const db1 = mongoose.connect("mongodb+srv://kiepufyy:XXbgZOBc4H7pwHoF@upcodb.rlq5b.mongodb.net/data?retryWrites=true&w=majority&appName=UPCODB")
+    console.log('Database connected successfully')  
+} catch (error) {
+    console.log(error)
+    console.log('Database connection failed')
+}
 
 app.get('/filterUsers', (req, res) => {
     const { month, year } = req.query;

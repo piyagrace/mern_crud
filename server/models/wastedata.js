@@ -7,5 +7,5 @@ const UserSchema = new mongoose.Schema({
     quantity: Number
 })
 
-const UserModel3 = mongoose.model("wastedata", UserSchema)
-module.exports = UserModel3
+const modelName = 'waste_data';
+module.exports = mongoose.models[modelName] || mongoose.model(modelName, UserSchema);
