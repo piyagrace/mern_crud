@@ -74,49 +74,59 @@ function Users() {
     <div className="d-flex vh-90 bg-success justify-content-center align-items-center">
       <div
         className="w-75 bg-white rounded p-3"
-        style={{ marginTop: "30px", marginBottom: "30px" }}
-      >
+        style={{ marginTop: "30px", marginBottom: "30px" }}>
         <Link to="/create" className="btn btn-success">
           Add +
         </Link>
         <p></p>
-        <div className="mb-3">
-          <label htmlFor="monthSelect" className="form-label">
-            Select Month
-          </label>
-          <select
-            id="monthSelect"
-            className="form-select"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            <option value="">All Months</option>
-            {months.map((month, index) => (
-              <option key={index} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
+        
+        <div className="row">
 
-        <div className="mb-3">
-          <label htmlFor="yearSelect" className="form-label">
-            Select Year
-          </label>
-          <select
-            id="yearSelect"
-            className="form-select"
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            <option value="">All Years</option>
-            {years.map((year, index) => (
-              <option key={index} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
+            {/* Select Month */}
+            <div className="col-md-6">
+                <div className="mb-3">
+                    <label htmlFor="monthSelect" className="form-label">
+                        Select Month
+                    </label>
+                    <select
+                        id="monthSelect"
+                        className="form-select"
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                    >
+                        <option value="">All Months</option>
+                        {months.map((month, index) => (
+                            <option key={index} value={month}>
+                                {month}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+
+
+            {/* Select Year */}
+            <div className="col-md-6">
+                <div className="mb-3">
+                    <label htmlFor="yearSelect" className="form-label">
+                        Select Year
+                    </label>
+                    <select
+                        id="yearSelect"
+                        className="form-select"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                    >
+                        <option value="">All Years</option>
+                        {years.map((year, index) => (
+                            <option key={index} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+        
         <p>
           <center>Total Solid Waste Generated</center>
         </p>
@@ -179,6 +189,7 @@ function Users() {
                 </table>
         <Charts />
       </div>
+    </div>
     </div>
   );
 }

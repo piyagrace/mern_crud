@@ -18,7 +18,7 @@ function Charts () {
     return( 
     <div>
     <p> <center>Charts </center> </p>
-    <PieChart width={800} height={300}>
+    <PieChart width={1100} height={300}>
       <Pie
         dataKey="quantity"
         nameKey="wastetype"
