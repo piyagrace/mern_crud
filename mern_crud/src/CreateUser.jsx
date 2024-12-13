@@ -21,8 +21,8 @@ function CreateUser (){
     }
 
     return (
-        <div className='d-flex vh-100 bg-primary justify-content-center align-tems-center'>
-            <div className='w-50 bg-white rounded p-3'>
+        <div className='d-flex vh-100 bg-success justify-content-center align-tems-center'>
+            <div className='w-50 bg-white rounded p-3' style={{ marginTop: "30px", marginBottom: "30px" }}>
                 <form onSubmit={Submit}>
                     <h2>Add Data</h2>
                     <div className='mb-2'>
