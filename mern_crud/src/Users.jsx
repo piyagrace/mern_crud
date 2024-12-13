@@ -164,7 +164,7 @@ function Users() {
         </table>
 
         <p> <center> All Data </center></p>
-                <table className='table' style={{ marginTop: "30px", marginLeft: "10px", marginRight: "10px"}} >
+          <table className='table' style={{ marginTop: "30px", marginLeft: "10px", marginRight: "10px"}} >
                     <thead>
                         <tr>
                             <th>Year</th>
