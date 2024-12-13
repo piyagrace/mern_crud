@@ -126,12 +126,12 @@ function Users() {
                     </select>
                 </div>
             </div>
-        
-        <p>
-          <center>Total Solid Waste Generated</center>
-        </p>
 
-        <table className="table">
+        <div
+        className="max-auto"
+>   
+        <p> <center>Total Solid Waste Generated</center></p>                     
+        <table className="table" style={{ marginTop: "30px", marginLeft: "10px", marginRight: "10px"}}>
           <thead>
             <tr>
               <th>Year</th>
@@ -164,7 +164,7 @@ function Users() {
         </table>
 
         <p> <center> All Data </center></p>
-                <table className='table'>
+                <table className='table' style={{ marginTop: "30px", marginLeft: "10px", marginRight: "10px"}} >
                     <thead>
                         <tr>
                             <th>Year</th>
@@ -188,6 +188,7 @@ function Users() {
                     </tbody>
                 </table>
         <Charts />
+      </div>
       </div>
     </div>
     </div>

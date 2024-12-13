@@ -17,7 +17,7 @@ function Charts () {
   
     return( 
     <div>
-    <p> <center>Charts </center> </p>
+    <p> <center>Charts for November 2024 (kg)</center> </p>
     <PieChart width={1100} height={300}>
       <Pie
         dataKey="quantity"
