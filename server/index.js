@@ -1,21 +1,37 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const cors = require('cors')
-const userModel = require('./models/Users')
-const userModel2 = require('./models/solid_waste')
-const UserModel3 = require('./models/wastedata')
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
-const app = express()
-app.use(cors())
-app.use(express.json())
+// Import your models (if they’re needed in other routes)
+const userModel = require('./models/Users');
+const userModel2 = require('./models/solid_waste');
+const userModel3 = require('./models/wastedata');
 
-try{
-    const db1 = mongoose.connect("mongodb+srv://kiepufyy:XXbgZOBc4H7pwHoF@upcodb.rlq5b.mongodb.net/data?retryWrites=true&w=majority&appName=UPCODB")
-    console.log('Database connected successfully')  
-} catch (error) {
-    console.log(error)
-    console.log('Database connection failed')
-}
+// Import the pdfRoutes
+const pdfRoutes = require('./routes/pdfRoutes');
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// -------------------- Connect to MongoDB --------------------
+// Use .then/.catch instead of a try/catch around an async call
+mongoose
+  .connect(
+    'mongodb+srv://kiepufyy:XXbgZOBc4H7pwHoF@upcodb.rlq5b.mongodb.net/data?retryWrites=true&w=majority&appName=UPCODB',
+  )
+  .then(() => {
+    console.log('Database connected successfully');
+
+    // Mount your routes AFTER the connection is up
+    app.use('/api/pdf', pdfRoutes);
+
+  })
+  .catch((error) => {
+    console.log('Database connection failed:', error);
+  });
 
 app.get('/filterUsers', (req, res) => {
     const { month, year } = req.query;
@@ -28,26 +44,26 @@ app.get('/filterUsers', (req, res) => {
         filter.year = year; // assuming the user model has a 'year' field
     }
 
-    UserModel3.find(filter)
+    userModel3.find(filter)
         .then(users => res.json(users))
         .catch(err => res.json(err));
 });
 
 
 app.post("/add_solidwaste", (req, res) => {
-    UserModel3.create(req.body)
+    userModel3.create(req.body)
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
 
 app.get('/solidwaste_data', (req, res) => {
-    UserModel3.find({}, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 }) 
+    userModel3.find({}, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 }) 
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
 
 app.get('/chart_data', (req, res) => { 
-    UserModel3.find({ year: 2024, month: "November" }, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 })
+    userModel3.find({ year: 2024, month: "November" }, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 })
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
@@ -55,21 +71,21 @@ app.get('/chart_data', (req, res) => {
 
 app.delete('/delete_solidwaste/:id', (req, res) => {
     const id = req.params.id;
-    UserModel3.findByIdAndDelete({_id:id})
+    userModel3.findByIdAndDelete({_id:id})
     .then(res => res.json(res))
     .catch(err => res.json(err))
 })
 
 app.get('/get_solidwaste/:id', (req, res) => {
     const id = req.params.id;
-    UserModel3.findById({_id:id})
+    userModel2serModel3.findById({_id:id})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
 
 app.put('/update_solidwaste/:id', (req, res) => {
     const id = req.params.id;
-    UserModel3.findByIdAndUpdate({_id:id}, {
+    userModel3.findByIdAndUpdate({_id:id}, {
         year: req.body.year,
         month: req.body.month,
         wastetype: req.body.wastetype,
@@ -92,7 +108,7 @@ app.post("/add_solid_waste", (req, res) => {
 }) 
 
 app.get('/', (req, res) => {
-    UserModel3.find({})
+    userModel3.find({})
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
