@@ -4,12 +4,19 @@ const cors = require('cors')
 const userModel = require('./models/Users')
 const userModel2 = require('./models/solid_waste')
 const UserModel3 = require('./models/wastedata')
+const pdfRoutes = require('./routes/pdfRoutes')
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 
 const db1 = mongoose.connect("mongodb://127.0.0.1:27017/crud")
+
+// Middleware to parse JSON bodies (if needed)
+app.use(express.json());
+
+// Routes
+app.use('/api/pdf', pdfRoutes);
 
 app.post("/add_solidwaste", (req, res) => {
     UserModel3.create(req.body)
