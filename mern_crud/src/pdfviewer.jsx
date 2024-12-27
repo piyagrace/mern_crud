@@ -29,7 +29,7 @@ function pdfviewer() {
     try {
       setError(null); // reset any previous error
       // Replace with your actual API endpoint (e.g., /api/pdf/view/:id)
-      const response = await fetch(`/api/pdf/view/${pdfId}`);
+      const response = await fetch(`/api/pdf/view/`+ pdfId);
       if (!response.ok) {
         throw new Error('Could not fetch PDF file');
       }
@@ -52,6 +52,7 @@ function pdfviewer() {
 
       {/* Button to fetch the PDF on demand */}
       <button onClick={handleFetchPdf}>Fetch PDF</button>
+
 
 
       <div className="viewer" style={{ border: '1px solid #000', height: '600px', marginTop: '20px' }}>
