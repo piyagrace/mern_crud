@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Charts from "./charts.jsx";
+import Pdfviewer from "./pdfviewer.jsx";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -188,6 +189,7 @@ function Users() {
                     </tbody>
                 </table>
         <Charts />
+        <Pdfviewer />
       </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import CreateUser from './CreateUser'
 import UpdateUser from './UpdateUser'
 import Charts from './charts'
+import Pdfviewer from './pdfviewer'
 import Users from './Users'
 import { useState } from 'react'
 
@@ -18,6 +19,7 @@ function App() {
         <Route path='/create' element={<CreateUser />}></Route>
         <Route path='/update/:id' element={<UpdateUser />}></Route>
         <Route path='/charts' element={<Charts />}></Route>
+        <Route path='/pdfviewer' element={<Pdfviewer />}></Route>
       </Routes>
     </BrowserRouter>
 
