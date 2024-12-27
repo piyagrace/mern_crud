@@ -1,93 +1,38 @@
-import React, { useState } from 'react';
-
-// Import Worker
-import { Worker } from '@react-pdf-viewer/core';
-// Import the main Viewer component
-import { Viewer } from '@react-pdf-viewer/core';
-// Import the styles
+import React, { useState } from 'react'; 
+import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-
-// Default layout plugin
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-// Import styles of default layout plugin
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
-function pdfviewer() {
-  // creating new plugin instance
+// Importing multiple PDFs from local assets
+import pdf1 from "./assets/Proper_Solid_Waste_Management.pdf"; 
+import pdf2 from "./assets/OM_NO._OIC-004-2024.pdf";
+import pdf3 from "./assets/OM_NO._PHDR-104-2024.pdf";
+import pdf4 from "./assets/OM-NO.2s_2024.pdf";
+
+function PdfViewer() {
+  const [currentPdf, setCurrentPdf] = useState(pdf1); // Default PDF
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
-
-  // We'll store the object URL for our PDF blob here
-  const [pdfFileUrl, setPdfFileUrl] = useState(null);
-  const [error, setError] = useState(null);
-
-  // Example: Suppose we have a PDF in DB with ID = '64b63ad5c1a86f8d2f1cabc3'
-  // In a real-world app, you'd dynamically get this ID or let the user select it.
-  const pdfId = '676da305490b3d5c4b951c78';
-
-  // A button to fetch the PDF from your backend on demand
-  const handleFetchPdf = async () => {
-    try {
-      setError(null); // reset any previous error
-      // Replace with your actual API endpoint (e.g., /api/pdf/view/:id)
-      const response = await fetch(`/api/pdf/view/${pdfId}`);
-      if (!response.ok) {
-        throw new Error('Could not fetch PDF file');
-      }
-      // Get the data as a Blob
-      const pdfBlob = await response.blob();
-      // Convert Blob to an object URL
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      // Store for display
-      setPdfFileUrl(pdfUrl);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  // For downloading the same PDF
-  const handleDownload = () => {
-    // Option 1: Direct link to the same route but setting 'Content-Disposition' to attachment
-    // Option 2: Manually fetch the PDF as a blob and trigger a download
-    fetch(`/api/pdf/view/${pdfId}`)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const fileUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = 'myFile.pdf'; // your desired file name
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(fileUrl);
-      })
-      .catch((err) => console.error('Download error:', err));
-  };
 
   return (
     <div className="container">
-      <h3>View PDF from MongoDB</h3>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+      <h3>View PDF from Local Assets</h3>
 
-      {/* Button to fetch the PDF on demand */}
-      <button onClick={handleFetchPdf}>Fetch PDF</button>
+      {/* Buttons to select different PDFs */}
+      <div>
+        <button onClick={() => setCurrentPdf(pdf1)}>View PDF 1</button>
+        <button onClick={() => setCurrentPdf(pdf2)}>View PDF 2</button>
+        <button onClick={() => setCurrentPdf(pdf3)}>View PDF 3</button>
+        <button onClick={() => setCurrentPdf(pdf4)}>View PDF 4</button>
+      </div>
 
-      {/* Only show "Download" button if PDF is fetched */}
-      {pdfFileUrl && (
-        <button onClick={handleDownload} style={{ marginLeft: '10px' }}>
-          Download PDF
-        </button>
-      )}
-
-      <div className="viewer" style={{ border: '1px solid #000', height: '600px', marginTop: '20px' }}>
-        {pdfFileUrl ? (
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-            <Viewer fileUrl={pdfFileUrl} plugins={[defaultLayoutPluginInstance]} />
-          </Worker>
-        ) : (
-          <p>Press "Fetch PDF" button to load the PDF</p>
-        )}
+      <div className="viewer" style={{ border: '1px solid #000', height: '600px' }}>
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+          <Viewer fileUrl={currentPdf} plugins={[defaultLayoutPluginInstance]} />
+        </Worker>
       </div>
     </div>
   );
 }
 
-export default pdfviewer;
+export default PdfViewer;
