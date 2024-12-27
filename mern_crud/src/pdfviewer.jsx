@@ -44,23 +44,6 @@ function pdfviewer() {
     }
   };
 
-  // For downloading the same PDF
-  const handleDownload = () => {
-    // Option 1: Direct link to the same route but setting 'Content-Disposition' to attachment
-    // Option 2: Manually fetch the PDF as a blob and trigger a download
-    fetch(`/api/pdf/view/${pdfId}`)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const fileUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = 'myFile.pdf'; // your desired file name
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(fileUrl);
-      })
-      .catch((err) => console.error('Download error:', err));
-  };
 
   return (
     <div className="container">
@@ -70,12 +53,6 @@ function pdfviewer() {
       {/* Button to fetch the PDF on demand */}
       <button onClick={handleFetchPdf}>Fetch PDF</button>
 
-      {/* Only show "Download" button if PDF is fetched */}
-      {pdfFileUrl && (
-        <button onClick={handleDownload} style={{ marginLeft: '10px' }}>
-          Download PDF
-        </button>
-      )}
 
       <div className="viewer" style={{ border: '1px solid #000', height: '600px', marginTop: '20px' }}>
         {pdfFileUrl ? (
