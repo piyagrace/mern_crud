@@ -12,81 +12,16 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 // Import styles of default layout plugin
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
+function openPDF() {
+  const url = 'http://localhost:3001/api/pdf/view/676da305490b3d5c4b951c78'; // URL to the Node.js server endpoint
+  window.open(url, '_blank'); // Opens in a new tab
+}
+
 function pdfviewer() {
-  // creating new plugin instance
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
-
-  // We'll store the object URL for our PDF blob here
-  const [pdfFileUrl, setPdfFileUrl] = useState(null);
-  const [error, setError] = useState(null);
-
-  // Example: Suppose we have a PDF in DB with ID = '64b63ad5c1a86f8d2f1cabc3'
-  // In a real-world app, you'd dynamically get this ID or let the user select it.
-  const pdfId = '676da305490b3d5c4b951c78';
-
-  // A button to fetch the PDF from your backend on demand
-  const handleFetchPdf = async () => {
-    try {
-      setError(null); // reset any previous error
-      // Replace with your actual API endpoint (e.g., /api/pdf/view/:id)
-      const response = await fetch(`/api/pdf/view/${pdfId}`);
-      if (!response.ok) {
-        throw new Error('Could not fetch PDF file');
-      }
-      // Get the data as a Blob
-      const pdfBlob = await response.blob();
-      // Convert Blob to an object URL
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      // Store for display
-      setPdfFileUrl(pdfUrl);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  // For downloading the same PDF
-  const handleDownload = () => {
-    // Option 1: Direct link to the same route but setting 'Content-Disposition' to attachment
-    // Option 2: Manually fetch the PDF as a blob and trigger a download
-    fetch(`/api/pdf/view/${pdfId}`)
-      .then((res) => res.blob())
-      .then((blob) => {
-        const fileUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = 'myFile.pdf'; // your desired file name
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(fileUrl);
-      })
-      .catch((err) => console.error('Download error:', err));
-  };
-
   return (
-    <div className="container">
-      <h3>View PDF from MongoDB</h3>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-
-      {/* Button to fetch the PDF on demand */}
-      <button onClick={handleFetchPdf}>Fetch PDF</button>
-
-      {/* Only show "Download" button if PDF is fetched */}
-      {pdfFileUrl && (
-        <button onClick={handleDownload} style={{ marginLeft: '10px' }}>
-          Download PDF
-        </button>
-      )}
-
-      <div className="viewer" style={{ border: '1px solid #000', height: '600px', marginTop: '20px' }}>
-        {pdfFileUrl ? (
-          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
-            <Viewer fileUrl={pdfFileUrl} plugins={[defaultLayoutPluginInstance]} />
-          </Worker>
-        ) : (
-          <p>Press "Fetch PDF" button to load the PDF</p>
-        )}
+      <div>
+          <button onClick={openPDF}>View PDF</button>
       </div>
-    </div>
   );
 }
 

@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
 
 // Import your models (if they’re needed in other routes)
 const userModel = require('./models/Users');
@@ -32,6 +34,15 @@ mongoose
   .catch((error) => {
     console.log('Database connection failed:', error);
   });
+
+  app.get('/pdf', (req, res) => {
+    const filePath = path.join(__dirname, 'example.pdf'); // Path to your PDF file
+    const stream = fs.createReadStream(filePath);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline; filename="example.pdf"');
+    stream.pipe(res);
+});
 
 app.get('/filterUsers', (req, res) => {
     const { month, year } = req.query;
