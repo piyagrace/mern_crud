@@ -3,8 +3,9 @@ const mongoose = require('mongoose')
 const UserSchema = new mongoose.Schema({
     year: Number,
     month: String,
-    wastetype: String,
-    quantity: Number
+    residual: Number,
+    biodegradable: Number,
+    recyclable: Number
 })
 
 const modelName = 'waste_data';

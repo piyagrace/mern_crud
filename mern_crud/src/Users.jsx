@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Charts from "./charts.jsx";
+import Waste_charts from "./waste_charts.jsx";
 import Pdfviewer from "./pdfviewer.jsx";
+import Chartjs from "./chartjs.jsx";
 
 function Users() {
-  const [users, setUsers] = useState([]);
+  // State for filtered data
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  // State for all data
+  const [allUsers, setAllUsers] = useState([]);
+  // States for dropdown selections
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
+  // Months and Years options
   const [months] = useState([
     "January",
     "February",
@@ -24,32 +31,46 @@ function Users() {
   ]);
   const [years] = useState([2023, 2024]); // Adjust the years as needed
 
+  // Fetch filtered users whenever selectedMonth or selectedYear changes
   useEffect(() => {
-    let queryParams = "";
+    // Build query parameters based on selected month and year
+    const queryParams = new URLSearchParams();
     if (selectedMonth) {
-      queryParams += `month=${selectedMonth}&`;
+      queryParams.append("month", selectedMonth);
     }
     if (selectedYear) {
-      queryParams += `year=${selectedYear}&`;
+      queryParams.append("year", Number(selectedYear)); // Ensure year is a number
     }
 
+    // Fetch filtered data from the backend
     axios
-      .get(`http://localhost:3001/filterUsers?${queryParams}`)
-      .then((result) => setUsers(result.data))
-      .catch((err) => console.log(err));
+      .get(`http://localhost:3001/filterUsers?${queryParams.toString()}`)
+      .then((result) => setFilteredUsers(result.data))
+      .catch((err) => console.error("Error fetching filtered users:", err));
   }, [selectedMonth, selectedYear]);
 
+  // Fetch all users once on component mount
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3001/filterUsers`) // No query params to get all users
+      .then((result) => setAllUsers(result.data))
+      .catch((err) => console.error("Error fetching all users:", err));
+  }, []);
+
+  // Handle deletion of a user
   const handleDelete = (id) => {
     axios
-      .delete("http://localhost:3001/delete_solidwaste/" + id)
+      .delete(`http://localhost:3001/delete_solidwaste/${id}`)
       .then((res) => {
-        console.log(res);
-        window.location.reload();
+        console.log("Delete response:", res);
+        // Update both filteredUsers and allUsers by removing the deleted user
+        setFilteredUsers((prevFiltered) => prevFiltered.filter((user) => user._id !== id));
+        setAllUsers((prevAll) => prevAll.filter((user) => user._id !== id));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error("Error deleting user:", err));
   };
 
-  // Transform data into a structure suitable for the table
+  // Transform data to aggregate waste types by year and month
   const transformData = (data) => {
     const grouped = data.reduce((acc, item) => {
       const key = `${item.year}-${item.month}`;
@@ -57,142 +78,180 @@ function Users() {
         acc[key] = {
           year: item.year,
           month: item.month,
-          Residuals: 0,
-          Biodegradables: 0,
-          "Non-Recyclables": 0,
+          residual: 0,
+          biodegradable: 0,
+          recyclable: 0,
         };
       }
-      acc[key][item.wastetype] = item.quantity;
+      acc[key].residual += item.residual || 0;
+      acc[key].biodegradable += item.biodegradable || 0;
+      acc[key].recyclable += item.recyclable || 0;
       return acc;
     }, {});
 
     return Object.values(grouped);
   };
 
-  const transformedData = transformData(users);
+  const transformedData = transformData(filteredUsers);
 
   return (
     <div className="d-flex vh-90 bg-success justify-content-center align-items-center">
       <div
         className="w-75 bg-white rounded p-3"
-        style={{ marginTop: "30px", marginBottom: "30px" }}>
-        <Link to="/create" className="btn btn-success">
+        style={{ marginTop: "30px", marginBottom: "30px" }}
+      >
+        {/* Add New Record Button */}
+        <Link to="/create" className="btn btn-success mb-3">
           Add +
         </Link>
-        <p></p>
-        
-        <div className="row">
 
-            {/* Select Month */}
-            <div className="col-md-6">
-                <div className="mb-3">
-                    <label htmlFor="monthSelect" className="form-label">
-                        Select Month
-                    </label>
-                    <select
-                        id="monthSelect"
-                        className="form-select"
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                    >
-                        <option value="">All Months</option>
-                        {months.map((month, index) => (
-                            <option key={index} value={month}>
-                                {month}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+        {/* Dropdowns for selecting Month and Year */}
+        <div className="row mb-4">
+          {/* Select Month */}
+          <div className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="monthSelect" className="form-label">
+                Select Month
+              </label>
+              <select
+                id="monthSelect"
+                className="form-select"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              >
+                <option value="">All Months</option>
+                {months.map((month, index) => (
+                  <option key={index} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
 
-
-            {/* Select Year */}
-            <div className="col-md-6">
-                <div className="mb-3">
-                    <label htmlFor="yearSelect" className="form-label">
-                        Select Year
-                    </label>
-                    <select
-                        id="yearSelect"
-                        className="form-select"
-                        value={selectedYear}
-                        onChange={(e) => setSelectedYear(e.target.value)}
-                    >
-                        <option value="">All Years</option>
-                        {years.map((year, index) => (
-                            <option key={index} value={year}>
-                                {year}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+          {/* Select Year */}
+          <div className="col-md-6">
+            <div className="mb-3">
+              <label htmlFor="yearSelect" className="form-label">
+                Select Year
+              </label>
+              <select
+                id="yearSelect"
+                className="form-select"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                <option value="">All Years</option>
+                {years.map((year, index) => (
+                  <option key={index} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+        </div>
 
-        <div
-        className="max-auto"
->   
-        <p> <center>Total Solid Waste Generated</center></p>                     
-        <table className="table" style={{ marginTop: "30px", marginLeft: "10px", marginRight: "10px"}}>
-          <thead>
-            <tr>
-              <th>Year</th>
-              <th>Month</th>            
-              <th>Residuals</th>
-              <th>Biodegradables</th>
-              <th>Recyclables</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-          {transformedData.map((item, index) => {
-            const total =
-            (item.Residuals || 0) +
-            (item.Biodegradables || 0) +
-            (item.Recyclables || 0); // Calculate the total
+        {/* Table: Total Solid Waste Generated (Filtered Data) */}
+        <div className="max-auto">
+          <h5 className="text-center">Total Solid Waste Generated</h5>
+          <table
+            className="table table-bordered"
+            style={{ marginTop: "20px", marginLeft: "10px", marginRight: "10px" }}
+          >
+            <thead className="table-light">
+              <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Residuals</th>
+                <th>Biodegradables</th>
+                <th>Recyclables</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transformedData.length > 0 ? (
+                transformedData.map((item, index) => {
+                  const total =
+                    (item.residual || 0) +
+                    (item.biodegradable || 0) +
+                    (item.recyclable || 0);
 
-        return (
-            <tr key={index}>
-            <td>{item.year}</td>
-            <td>{item.month}</td>
-            <td>{item.Residuals || 0}</td>
-            <td>{item.Biodegradables || 0}</td>
-            <td>{item.Recyclables || 0}</td>
-            <td>{total}</td> 
-            </tr>
-            );
-          })}
-          </tbody>
-        </table>
+                  return (
+                    <tr key={index}>
+                      <td>{item.year}</td>
+                      <td>{item.month}</td>
+                      <td>{item.residual}</td>
+                      <td>{item.biodegradable}</td>
+                      <td>{item.recyclable}</td>
+                      <td>{total}</td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No data available.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-        <p> <center> All Data </center></p>
-          <table className='table' style={{ marginTop: "30px", marginLeft: "10px", marginRight: "10px"}} >
-                    <thead>
-                        <tr>
-                            <th>Year</th>
-                            <th>Month</th>
-                            <th>Waste Type</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            users.map((user) => {
-                               // eslint-disable-next-line react/jsx-key
-                               return <tr>
-                                    <td>{user.year}</td>
-                                    <td>{user.month}</td>
-                                    <td>{user.wastetype}</td>
-                                    <td>{user.quantity}</td>
-                                </tr>
-                            })
-                        }
-                    </tbody>
-                </table>
+        {/* Table: All Data (Unfiltered) */}
+        <div className="max-auto">
+          <h5 className="text-center">All Data</h5>
+          <table
+            className="table table-bordered"
+            style={{ marginTop: "20px", marginLeft: "10px", marginRight: "10px" }}
+          >
+            <thead className="table-light">
+              <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Residuals</th>
+                <th>Biodegradable</th>
+                <th>Recyclable</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {allUsers.length > 0 ? (
+                allUsers.map((user) => (
+                  <tr key={user._id}>
+                    <td>{user.year}</td>
+                    <td>{user.month}</td>
+                    <td>{user.residual}</td>
+                    <td>{user.biodegradable}</td>
+                    <td>{user.recyclable}</td>
+                    <td>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDelete(user._id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No data available.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Additional Components */}
         <Charts />
         <Pdfviewer />
+        <Waste_charts />
+        <Chartjs />
       </div>
-      </div>
-    </div>
     </div>
   );
 }

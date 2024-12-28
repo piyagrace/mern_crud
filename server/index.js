@@ -68,13 +68,13 @@ app.post("/add_solidwaste", (req, res) => {
 })
 
 app.get('/solidwaste_data', (req, res) => {
-    userModel3.find({}, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 }) 
+    userModel3.find({}, { _id: 1, year: 1, month: 1, residual: 1, biodegradable: 1, recyclable: 1}) 
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
 
 app.get('/chart_data', (req, res) => { 
-    userModel3.find({ year: 2024, month: "November" }, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 })
+    userModel3.find({ year: 2024}, { _id: 1, year: 1, month: 1, wastetype: 1, quantity: 1 })
     .then(users => res.json(users))
     .catch(err => res.json(err))
 })
