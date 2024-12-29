@@ -5,6 +5,7 @@ import Charts from "./charts.jsx";
 import Waste_charts from "./waste_charts.jsx";
 import Pdfviewer from "./pdfviewer.jsx";
 import Chartjs from "./chartjs.jsx";
+import WaterQualityChart from "./water_charts.jsx";
 
 function Users() {
   // State for filtered data
@@ -251,10 +252,10 @@ function Users() {
         </div>
 
         {/* Additional Components */}
-        <Charts />
         <Pdfviewer />
         <Waste_charts />
         <Chartjs />
+        <WaterQualityChart />
       </div>
     </div>
   );

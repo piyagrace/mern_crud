@@ -16,6 +16,11 @@ function AddWater() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const [options_source_tank] = useState([
+        "U-mall Water Tank",
+        "Main Water Tank",
+      ]);
+
     const validateInput = () => {
         // Check if year is a valid number and is a four-digit year
         if (!/^\d{4}$/.test(year)) {
@@ -75,6 +80,25 @@ function AddWater() {
                             onChange={(e) => setMonth(e.target.value)}
                         />
                     </div>
+                    <div className="mb-3">
+
+              <label htmlFor="monthSelect" className="form-label">
+                Source Tank:
+              </label>
+              <select
+                id="monthSelect"
+                className="form-select"
+                value={source_tank}
+                onChange={(e) => setSource_tank(e.target.value)}
+              >
+                <option value="">Select Source Tank</option>
+                {options_source_tank.map((source, index) => (
+                  <option key={index} value={source}>
+                    {source}
+                  </option>
+                ))}
+              </select>
+            </div>
                     <div className='mb-2'>
                         <label>ph: </label>
                         <input type="text" placeholder='Enter Data' className='form-control'
@@ -124,7 +148,6 @@ function AddWater() {
                             onChange={(e) => setPhosphate(e.target.value)}
                         />
                     </div>
-                    <p> For Main Water Tank:</p>
                     <button className='btn btn-success'>Submit</button>
                 </form>
             </div>
