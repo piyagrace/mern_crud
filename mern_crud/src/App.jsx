@@ -7,6 +7,7 @@ import UpdateUser from './UpdateUser'
 import Charts from './charts'
 import Pdfviewer from './pdfviewer'
 import Users from './Users'
+import AddWater from './AddWater'
 import { useState } from 'react'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path='/update/:id' element={<UpdateUser />}></Route>
         <Route path='/charts' element={<Charts />}></Route>
         <Route path='/pdfviewer' element={<Pdfviewer />}></Route>
+        <Route path='/addwater' element={<AddWater />}></Route>
       </Routes>
     </BrowserRouter>
 

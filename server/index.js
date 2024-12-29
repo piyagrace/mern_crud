@@ -8,6 +8,7 @@ const fs = require('fs');
 const userModel = require('./models/Users');
 const userModel2 = require('./models/solid_waste');
 const userModel3 = require('./models/wastedata');
+const userModel4 = require('./models/waterdata');
 
 // Import the pdfRoutes
 const pdfRoutes = require('./routes/pdfRoutes');
@@ -60,6 +61,17 @@ app.get('/filterUsers', (req, res) => {
         .catch(err => res.json(err));
 });
 
+app.post("/add_waterquality", (req, res) => {
+    userModel4.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+app.get('/waterquality_data', (req, res) => {
+    userModel4.find({}, { _id: 1, year: 1, month: 1, source_tank: 1, pH: 1, Color: 1, Fecal_Coliform: 1, TSS: 1, Chloride: 1, Nitrate: 1, Phosphate: 1}) 
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
 
 app.post("/add_solidwaste", (req, res) => {
     userModel3.create(req.body)

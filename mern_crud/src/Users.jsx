@@ -102,7 +102,11 @@ function Users() {
       >
         {/* Add New Record Button */}
         <Link to="/create" className="btn btn-success mb-3">
-          Add +
+          Add Solid Waste
+        </Link>
+
+        <Link to="/addwater" className="btn btn-success mb-3">
+          Add Water Data
         </Link>
 
         {/* Dropdowns for selecting Month and Year */}

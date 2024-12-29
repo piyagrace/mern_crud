@@ -42,7 +42,16 @@ function Chartjs() {
 
   const options = {
     responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
     plugins: {
+      tooltip: {
+        position: 'average',
+        mode: 'index',
+        intersect: false
+      },
       legend: {
         position: 'bottom',
       },
@@ -52,20 +61,25 @@ function Chartjs() {
       }
     },
     scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Months'
-          }
+      x: {
+        title: {
+          display: true,
+          text: 'Months'
         },
-        y: {
-          title: {
-            display: true,
-            text: 'Weight (kg)'
-          }
+        ticks: {
+          autoSkip: false,  // Prevent labels from being skipped
+          maxRotation: 45,  // Max rotation angle in degrees
+          minRotation: 45   // Min rotation angle in degrees
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Weight (kg)'
         }
       }
-  };
+    }
+  };  
 
   return (
     <div>
