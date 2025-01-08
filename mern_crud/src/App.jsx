@@ -8,6 +8,7 @@ import Charts from './charts'
 import Pdfviewer from './pdfviewer'
 import Users from './Users'
 import AddWater from './AddWater'
+import AddAir from './AddAir'
 import { useState } from 'react'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path='/charts' element={<Charts />}></Route>
         <Route path='/pdfviewer' element={<Pdfviewer />}></Route>
         <Route path='/addwater' element={<AddWater />}></Route>
+        <Route path='/addair' element={<AddAir />}></Route>
       </Routes>
     </BrowserRouter>
 

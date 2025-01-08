@@ -32,7 +32,7 @@ function AddWater() {
         }
         // Check if residual, biodegradable, and recyclable are numbers
         if (isNaN(pH) || isNaN(Color) || isNaN(Fecal_Coliform) || isNaN(Nitrate) || isNaN(Phosphate) || isNaN(TSS) || isNaN(Chloride)) {
-            return "Residual, Biodegradable, and Recyclable must be valid numbers.";
+            return "Values must be valid numbers.";
         }
         // Check if any of the values are empty
         if (pH.trim() === '' || Color.trim() === '' || Fecal_Coliform.trim() === '' || TSS.trim() === '' || Chloride.trim() === '' || Nitrate.trim() === '' || Phosphate.trim() === '') {

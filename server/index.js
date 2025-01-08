@@ -9,6 +9,7 @@ const userModel = require('./models/Users');
 const userModel2 = require('./models/solid_waste');
 const userModel3 = require('./models/wastedata');
 const userModel4 = require('./models/waterdata');
+const userModel5 = require('./models/airdata');
 
 // Import the pdfRoutes
 const pdfRoutes = require('./routes/pdfRoutes');
@@ -45,6 +46,19 @@ mongoose
     stream.pipe(res);
 });
 
+app.get('/airquality_data/:year/:month', (req, res) => {
+    const { year, month } = req.params;
+    userModel5.find({ year: parseInt(year), month: month }, (err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        } else if (!data) {
+            res.status(404).send('No data found for specified year and month.');
+        } else {
+            res.status(200).json(data);
+        }
+    });
+});
+
 app.get('/filterUsers', (req, res) => {
     const { month, year } = req.query;
 
@@ -59,6 +73,34 @@ app.get('/filterUsers', (req, res) => {
     userModel3.find(filter)
         .then(users => res.json(users))
         .catch(err => res.json(err));
+});
+
+app.post("/add_airquality", (req, res) => {
+    userModel5.create(req.body)
+    .then(users => res.json(users))
+    .catch(err => res.json(err))
+})
+
+app.get('/airquality_data', (req, res) => {
+    const { year, month } = req.query;
+
+    // Build the query object
+    let query = {};
+    if (year) query.year = parseInt(year);
+    if (month) query.month = month;
+
+    userModel5.find(query, { _id: 0, year: 1, month: 1, CO: 1, NO2: 1, SO2: 1 }) 
+        .then(data => {
+            if (data.length > 0) {
+                res.json(data[0]); // Return the first matching document
+            } else {
+                res.status(404).json({ message: 'No data found for the selected month and year.' });
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching data:', err);
+            res.status(500).json({ error: 'Internal server error' });
+        });
 });
 
 app.post("/add_waterquality", (req, res) => {

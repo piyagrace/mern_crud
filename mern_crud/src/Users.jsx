@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"; 
 import { Link } from "react-router-dom";
 import axios from "axios";
-import Charts from "./charts.jsx";
 import Waste_charts from "./waste_charts.jsx";
 import Pdfviewer from "./pdfviewer.jsx";
 import Chartjs from "./chartjs.jsx";
 import WaterQualityChart from "./water_charts.jsx";
+import AirQualityChart from "./air_charts.jsx";
 
 function Users() {
   // State for filtered data
@@ -108,6 +108,10 @@ function Users() {
 
         <Link to="/addwater" className="btn btn-success mb-3">
           Add Water Data
+        </Link>
+
+        <Link to="/addair" className="btn btn-success mb-3">
+          Add Air Data
         </Link>
 
         {/* Dropdowns for selecting Month and Year */}
@@ -256,6 +260,7 @@ function Users() {
         <Waste_charts />
         <Chartjs />
         <WaterQualityChart />
+        <AirQualityChart />
       </div>
     </div>
   );
