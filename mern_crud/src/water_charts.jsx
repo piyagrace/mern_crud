@@ -11,7 +11,7 @@ import { Chart } from 'chart.js';
 Chart.register(annotationPlugin);
 
 // Import the CSS file
-import './WaterQualityChart.css'; // Adjust the path if necessary
+import './Chart.css'; // Adjust the path if necessary
 
 function WaterQualityChart() {
   const [chartData, setChartData] = useState({

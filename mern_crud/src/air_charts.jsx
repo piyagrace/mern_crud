@@ -2,6 +2,70 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import axios from 'axios';
+import './Chart.css'; 
+
+// 1. Define AQI categories for each pollutant
+const aqiCategories = {
+  CO: [
+    { category: 'Good', min: 0, max: 1 },
+    { category: 'Satisfactory', min: 1, max: 2 },
+    { category: 'Moderately Polluted', min: 2, max: 10 },
+    { category: 'Poor', min: 10, max: 17 },
+    { category: 'Very Poor', min: 17, max: 34 },
+    { category: 'Severe', min: 34, max: Infinity }
+  ],
+  NO2: [
+    { category: 'Good', min: 0, max: 40 },
+    { category: 'Satisfactory', min: 41, max: 80 },
+    { category: 'Moderately Polluted', min: 81, max: 180 },
+    { category: 'Poor', min: 181, max: 280 },
+    { category: 'Very Poor', min: 281, max: 400 },
+    { category: 'Severe', min: 400, max: Infinity }
+  ],
+  SO2: [
+    { category: 'Good', min: 0, max: 40 },
+    { category: 'Satisfactory', min: 41, max: 80 },
+    { category: 'Moderately Polluted', min: 81, max: 380 },
+    { category: 'Poor', min: 381, max: 800 },
+    { category: 'Very Poor', min: 801, max: 1600 },
+    { category: 'Severe', min: 1600, max: Infinity }
+  ]
+};
+
+// 2. Define colors for each category
+const categoryColors = {
+  'Good': 'rgba(81,238,227,255)',           
+  'Satisfactory': 'rgba(80,203,168,255)',   
+  'Moderately Polluted': 'rgba(241,229,64,255)', 
+  'Poor': 'rgba(254,80,78,255)',           
+  'Very Poor': 'rgba(151,0,51,255)',      
+  'Severe': 'rgba(126,1,35,255)',         
+  'Unknown': '#CCCCCC'        
+};
+
+const categoryBackgroundColors = {
+  'Good': 'rgba(81,238,227,255)',          
+  'Satisfactory': 'rgba(255, 255, 0, 0.5)',
+  'Moderately Polluted': 'rgba(241,229,64,255)', 
+  'Poor': 'rgba(254,80,78,255)',           
+  'Very Poor': 'rgba(151,0,51,255)',   
+  'Severe': 'rgba(126,1,35,255)',       
+  'Unknown': 'rgba(204, 204, 204, 0.5)'     
+};
+
+// 3. Function to get AQI category based on pollutant and value
+const getAqiCategory = (pollutant, value) => {
+  const categories = aqiCategories[pollutant];
+  if (!categories) return 'Unknown';
+
+  for (let i = 0; i < categories.length; i++) {
+    const { min, max, category } = categories[i];
+    if (value >= min && value < max) {
+      return category;
+    }
+  }
+  return 'Unknown';
+};
 
 function AirQualityChart() {
   // Reference to store the original data for toggling
@@ -11,23 +75,15 @@ function AirQualityChart() {
     SO2: 0
   });
 
-  // State for chart data
+  // 4. State for chart data
   const [chartData, setChartData] = useState({
     labels: ['CO', 'NO₂', 'SO₂'], // Labels for the x-axis
     datasets: [
       { 
         label: 'Air Quality', // Single dataset label
         data: [0, 0, 0], // Initialize with zeros
-        borderColor: [
-          '#ffbb2a', // CO border color
-          '#2489e1', // NO₂ border color
-          '#4d8833'  // SO₂ border color
-        ],
-        backgroundColor: [
-          'rgba(255, 239, 205, 0.5)', // CO background color
-          'rgba(23, 131, 230, 0.5)',  // NO₂ background color
-          'rgba(87, 141, 60, 0.3)'    // SO₂ background color
-        ],
+        borderColor: [], // To be set dynamically
+        backgroundColor: [], // To be set dynamically
         borderWidth: 1
       }
     ]
@@ -65,13 +121,30 @@ function AirQualityChart() {
           SO2: data.SO2
         };
 
-        // Update chart data with all pollutant values
+        // Determine categories and colors for each pollutant
+        const pollutants = ['CO', 'NO2', 'SO2'];
+        const values = [data.CO, data.NO2, data.SO2];
+        const backgroundColors = [];
+        const borderColors = [];
+
+        values.forEach((value, index) => {
+          const pollutant = pollutants[index];
+          const category = getAqiCategory(pollutant, value);
+          const backgroundColor = categoryBackgroundColors[category] || categoryBackgroundColors['Unknown'];
+          const borderColor = categoryColors[category] || categoryColors['Unknown'];
+          backgroundColors.push(backgroundColor);
+          borderColors.push(borderColor);
+        });
+
+        // Update chart data with all pollutant values and corresponding colors
         setChartData(prevState => ({
           ...prevState,
           datasets: [
             {
               ...prevState.datasets[0],
-              data: [data.CO, data.NO2, data.SO2]
+              data: values,
+              backgroundColor: backgroundColors,
+              borderColor: borderColors
             }
           ]
         }));
@@ -85,7 +158,9 @@ function AirQualityChart() {
           datasets: [
             {
               ...prevState.datasets[0],
-              data: [null, null, null] // Hide all bars
+              data: [null, null, null], // Hide all bars
+              backgroundColor: [null, null, null],
+              borderColor: [null, null, null]
             }
           ]
         }));
@@ -103,46 +178,40 @@ function AirQualityChart() {
     },
     plugins: {
       legend: {
-        position: 'top',
-        labels: {
-          // Override the default legend label generator
-          generateLabels: function(chart) {
-            const dataset = chart.data.datasets[0];
-            return chart.data.labels.map((label, index) => ({
-              text: label,
-              fillStyle: dataset.backgroundColor[index],
-              strokeStyle: dataset.borderColor[index],
-              lineWidth: dataset.borderWidth,
-              index: index
-            }));
-          }
-        },
-        // Handle legend click events
-        onClick: function(e, legendItem, legend) {
-          const index = legendItem.index;
-          const chart = legend.chart;
-          const dataset = chart.data.datasets[0];
-          
-          // Toggle visibility by setting the data value to null or restoring it
-          if (dataset.data[index] !== null) {
-            dataset.data[index] = null; // Hide the bar
-          } else {
-            // Restore the original data value
-            const originalValue = originalChartData.current[
-              chart.data.labels[index].replace('₂', '2') // Convert subscript to normal character
-            ];
-            dataset.data[index] = originalValue;
-          }
-          
-          chart.update();
-        }
+        display: false, // Hide the default Chart.js legend
       },
       title: {
         display: true,
         text: `Air Quality in CvSU - Indang Campus for ${selectedMonth} ${selectedYear}`
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const pollutant = context.label;
+            const value = context.parsed.y;
+            const pollutantKey = pollutant.replace('₂', '2'); // 'NO₂' -> 'NO2', 'SO₂' -> 'SO2'
+
+            if (value === null || value === undefined) {
+              return `${pollutant}: No data`;
+            }
+
+            const category = getAqiCategory(pollutantKey, value);
+            return `${pollutant}: ${value} (${category})`;
+          }
+        }
       }
     }
   };
+
+  // 5. Define categories for the legend
+  const legendCategories = [
+    { label: 'Good', color: categoryColors['Good'] },
+    { label: 'Satisfactory', color: categoryColors['Satisfactory'] },
+    { label: 'Moderately Polluted', color: categoryColors['Moderately Polluted'] },
+    { label: 'Poor', color: categoryColors['Poor'] },
+    { label: 'Very Poor', color: categoryColors['Very Poor'] },
+    { label: 'Severe', color: categoryColors['Severe'] },
+  ];
 
   return (
     <div>
@@ -180,8 +249,30 @@ function AirQualityChart() {
       {/* Display error message if any */}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Bar Chart */}
+      {/* 6. Bar Chart */}
       <Bar data={chartData} options={options} />
+
+      {/* 7. Custom Legend */}
+      <div className="chart-legend">
+        <div className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: 'rgba(81,238,227,255)' }}></span> Good
+        </div>
+        <div className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: 'rgba(80,203,168,255)' }}></span> Satisfactory
+        </div>
+        <div className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: 'rgba(241,229,64,255)' }}></span> Moderately Polluted
+        </div>
+        <div className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: 'rgba(254,80,78,255)' }}></span> Poor
+        </div>
+        <div className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: 'rgba(151,0,51,255)' }}></span> Very Poor
+        </div>
+        <div className="legend-item">
+          <span className="legend-color" style={{ backgroundColor: 'rgba(126,1,35,255)' }}></span> Severe
+        </div>
+      </div>
     </div>
   );
 }
